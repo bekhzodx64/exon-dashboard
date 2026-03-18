@@ -69,7 +69,7 @@ export default function KnowledgeBase() {
                     <input
                         type="text"
                         placeholder="Find a specific guide..."
-                        className="h-12 w-full rounded-2xl border border-zinc-200 bg-white pl-12 pr-4 text-sm font-medium shadow-sm transition-all focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 dark:border-zinc-800 dark:bg-zinc-900 dark:focus:border-orange-500/30"
+                        className="h-12 w-full rounded-2xl border border-border bg-white pl-12 pr-4 text-sm font-medium shadow-sm transition-all focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500/30"
                     />
                 </div>
             </div>
@@ -82,7 +82,7 @@ export default function KnowledgeBase() {
                         <Link
                             key={index}
                             href={block.href}
-                            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] border border-zinc-200 bg-white transition-all hover:-translate-y-2 hover:border-orange-500/50 hover:shadow-[0_20px_50px_rgba(255,100,0,0.1)] dark:border-zinc-800 dark:bg-zinc-950"
+                            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] border border-border bg-white transition-all hover:-translate-y-2 hover:border-orange-500/50 hover:shadow-[0_20px_50px_rgba(255,100,0,0.1)]"
                         >
                             <div className="p-8 md:p-10">
                                 <div className="flex items-start justify-between">
@@ -93,7 +93,7 @@ export default function KnowledgeBase() {
                                         <span className="translate-x-full text-xs font-bold uppercase tracking-widest text-orange-600 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                                             Learn More
                                         </span>
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-50 transition-colors group-hover:bg-orange-500 group-hover:text-white dark:bg-zinc-900">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-50 transition-colors group-hover:bg-orange-500 group-hover:text-white">
                                             <ArrowRight className="size-5" />
                                         </div>
                                     </div>
@@ -111,7 +111,7 @@ export default function KnowledgeBase() {
                                 {/* Topics covered list */}
                                 <div className="mt-8 flex flex-wrap gap-2">
                                     {block.items.map((item, i) => (
-                                        <span key={i} className="inline-flex items-center gap-1.5 rounded-full border border-zinc-100 bg-zinc-50/50 px-3 py-1.5 text-xs font-semibold text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900/30 dark:text-zinc-400">
+                                        <span key={i} className="inline-flex items-center gap-1.5 rounded-full border border-border bg-zinc-50/50 px-3 py-1.5 text-xs font-semibold text-zinc-600">
                                             <FileText className="size-3 opacity-50" />
                                             {item}
                                         </span>

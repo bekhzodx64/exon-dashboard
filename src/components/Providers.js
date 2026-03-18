@@ -1,7 +1,6 @@
 "use client";
 
 import { SessionProvider, useSession } from "next-auth/react";
-import { ThemeProvider } from "next-themes";
 import { useEffect } from "react";
 
 function BrandColorManager({ children }) {
@@ -18,12 +17,10 @@ function BrandColorManager({ children }) {
 
 export function Providers({ children }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <SessionProvider>
-        <BrandColorManager>
-          {children}
-        </BrandColorManager>
-      </SessionProvider>
-    </ThemeProvider>
+    <SessionProvider>
+      <BrandColorManager>
+        {children}
+      </BrandColorManager>
+    </SessionProvider>
   );
 }

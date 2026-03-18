@@ -170,17 +170,17 @@ export default function UserManagement() {
             {/* Header section */}
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
                 <div className="space-y-1">
-                    <h1 className="text-4xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+                    <h1 className="text-4xl font-black tracking-tight text-zinc-900">
                         User Management
                     </h1>
-                    <p className="text-zinc-500 dark:text-zinc-500 font-bold uppercase tracking-widest text-[10px]">
+                    <p className="text-zinc-500 font-bold uppercase tracking-widest text-[10px]">
                         Manage accounts, roles and access permissions
                     </p>
                 </div>
 
                 <button
                     onClick={() => { resetForm(); setIsAddModalOpen(true); }}
-                    className="group flex h-12 items-center gap-2 rounded-2xl bg-zinc-950 px-6 font-bold text-white shadow-xl dark:bg-zinc-100 dark:text-black transition-all hover:scale-105 active:scale-95"
+                    className="group flex h-12 items-center gap-2 rounded-2xl bg-zinc-950 px-6 font-bold text-white shadow-xl transition-all hover:scale-105 active:scale-95"
                 >
                     <UserPlus className="size-5 transition-transform group-hover:rotate-12" />
                     Create New Account
@@ -195,7 +195,7 @@ export default function UserManagement() {
                     { label: "Admins", value: users.filter(u => u.role === 'admin').length, icon: UserCheck2, color: "text-green-500" },
                     { label: "Employees", value: users.filter(u => u.role === 'employee').length, icon: Clock, color: "text-brand" },
                 ].map((stat, i) => (
-                    <div key={i} className="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950 shadow-sm transition-all hover:shadow-md">
+                    <div key={i} className="rounded-3xl border border-border bg-white p-6 shadow-sm transition-all hover:shadow-md">
                         <div className="flex items-center justify-between mb-4">
                             <div className={`p-2 rounded-xl bg-zinc-50 dark:bg-zinc-900 ${stat.color}`}>
                                 <stat.icon className="size-5" />
@@ -209,7 +209,7 @@ export default function UserManagement() {
             </div>
 
             {/* Main Table section */}
-            <div className="overflow-hidden rounded-[2.5rem] border border-zinc-200 bg-white shadow-xl shadow-zinc-200/50 dark:border-zinc-800 dark:bg-zinc-950 dark:shadow-none">
+            <div className="overflow-hidden rounded-[2.5rem] border border-border bg-white shadow-xl shadow-zinc-200/50">
                 <div className="border-b border-zinc-100 p-6 dark:border-zinc-900">
                     <div className="flex items-center gap-4">
                         <div className="relative flex-1 max-w-sm">
@@ -238,7 +238,7 @@ export default function UserManagement() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="bg-zinc-50/50 text-[10px] font-black uppercase tracking-widest text-zinc-400 dark:bg-zinc-900/50">
+                            <tr className="bg-zinc-50/50 text-[10px] font-black uppercase tracking-widest text-zinc-400">
                                 <th className="px-8 py-5">Full Name & Email</th>
                                 <th className="px-8 py-5">System Role</th>
                                 <th className="px-8 py-5 text-right">Actions</th>
@@ -262,7 +262,7 @@ export default function UserManagement() {
                                 </tr>
                             ) : (
                                 filteredUsers.map((user) => (
-                                    <tr key={user.id} className="group hover:bg-zinc-50/50 dark:hover:bg-zinc-900/10 transition-colors">
+                                    <tr key={user.id} className="group hover:bg-zinc-50/50 dark:hover:bg-zinc-800/10 transition-colors">
                                         <td className="px-8 py-5">
                                             <div className="flex flex-col">
                                                 <span className="font-bold text-zinc-900 dark:text-zinc-50">{user.name || "Unnamed"}</span>
