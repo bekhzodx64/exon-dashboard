@@ -80,7 +80,7 @@ export default function Sidebar({ timeLeft = "1:59:00" }) {
             <div className="flex flex-col px-4 py-8 h-full">
                 {/* Logo */}
                 <div className="mb-10 flex items-center gap-3 px-2">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-[0.9rem] bg-linear-to-br from-orange-500 to-amber-600 font-black text-white shadow-xl shadow-orange-500/20">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-[0.9rem] bg-linear-to-br from-brand to-brand/60 font-black text-white shadow-xl shadow-brand/20">
                         EX
                     </div>
                     <div className="flex flex-col">
@@ -105,7 +105,7 @@ export default function Sidebar({ timeLeft = "1:59:00" }) {
                                 {timeLeft}
                             </div>
                             <div className="mt-2 h-1.5 w-full rounded-full bg-zinc-800 dark:bg-zinc-200 overflow-hidden">
-                                <div className="h-full w-[80%] bg-orange-500 transition-all duration-1000" />
+                                <div className="h-full w-[80%] bg-brand transition-all duration-1000" />
                             </div>
                         </div>
                         <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform">
@@ -139,7 +139,7 @@ export default function Sidebar({ timeLeft = "1:59:00" }) {
                                                         className={cn(
                                                             "flex w-full items-center justify-between rounded-2xl px-3 py-3 text-sm font-bold transition-all duration-300",
                                                             isSubMenuActive
-                                                                ? "bg-orange-600/5 text-orange-600 dark:bg-orange-400/10 dark:text-orange-400"
+                                                                ? "bg-brand/5 text-brand dark:bg-brand/10 dark:text-brand"
                                                                 : "text-zinc-600 hover:bg-zinc-200/50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
                                                         )}
                                                     >
@@ -156,7 +156,7 @@ export default function Sidebar({ timeLeft = "1:59:00" }) {
                                                                 href="/knowledge"
                                                                 className={cn(
                                                                     "block rounded-xl px-3 py-2 text-xs font-bold transition-colors",
-                                                                    pathname === "/knowledge" ? "text-orange-600 dark:text-orange-400" : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                                                                    pathname === "/knowledge" ? "text-brand" : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
                                                                 )}
                                                             >
                                                                 Overview
@@ -170,7 +170,7 @@ export default function Sidebar({ timeLeft = "1:59:00" }) {
                                                                         className={cn(
                                                                             "block rounded-xl px-3 py-2 text-xs font-bold transition-colors",
                                                                             isSubActive
-                                                                                ? "text-orange-600 dark:text-orange-400"
+                                                                                ? "text-brand"
                                                                                 : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
                                                                         )}
                                                                     >

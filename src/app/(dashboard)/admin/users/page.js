@@ -193,7 +193,7 @@ export default function UserManagement() {
                     { label: "Total Users", value: users.length, icon: Users, color: "text-blue-500" },
                     { label: "Global Admins", value: users.filter(u => u.role === 'global_admin').length, icon: ShieldAlert, color: "text-red-500" },
                     { label: "Admins", value: users.filter(u => u.role === 'admin').length, icon: UserCheck2, color: "text-green-500" },
-                    { label: "Employees", value: users.filter(u => u.role === 'employee').length, icon: Clock, color: "text-orange-500" },
+                    { label: "Employees", value: users.filter(u => u.role === 'employee').length, icon: Clock, color: "text-brand" },
                 ].map((stat, i) => (
                     <div key={i} className="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950 shadow-sm transition-all hover:shadow-md">
                         <div className="flex items-center justify-between mb-4">
@@ -249,7 +249,7 @@ export default function UserManagement() {
                                 <tr>
                                     <td colSpan="3" className="px-8 py-10 text-center">
                                         <div className="flex flex-col items-center gap-2">
-                                            <Loader2 className="size-6 animate-spin text-orange-500" />
+                                            <Loader2 className="size-6 animate-spin text-brand" />
                                             <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">Loading Users...</span>
                                         </div>
                                     </td>
@@ -290,7 +290,7 @@ export default function UserManagement() {
                                                   (currentUser?.role === 'admin' && user.role === 'employee')) && (
                                                      <button
                                                          onClick={() => openEditModal(user)}
-                                                         className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-50 text-zinc-500 hover:bg-zinc-100 hover:text-orange-600 dark:bg-zinc-900 dark:hover:bg-zinc-800 transition-colors"
+                                                         className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-50 text-zinc-500 hover:bg-brand/5 hover:text-brand dark:bg-zinc-900 dark:hover:bg-brand/10 transition-colors"
                                                      >
                                                          <Pencil className="size-4" />
                                                      </button>
@@ -420,7 +420,7 @@ export default function UserManagement() {
                                                         type="button"
                                                         onClick={() => setFormData({ ...formData, role })}
                                                         className={`h-11 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${formData.role === role
-                                                            ? 'bg-zinc-950 text-white dark:bg-zinc-100 dark:text-black shadow-lg'
+                                                            ? 'bg-brand text-white shadow-lg'
                                                             : 'bg-zinc-50 text-zinc-400 dark:bg-zinc-900 hover:bg-zinc-100'
                                                             }`}
                                                     >
@@ -434,7 +434,7 @@ export default function UserManagement() {
                                 <button
                                     type="submit"
                                     disabled={formLoading}
-                                    className="w-full h-14 bg-orange-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:translate-y-[-2px] active:translate-y-0 transition-all flex items-center justify-center gap-3 disabled:opacity-70"
+                                    className="w-full h-14 bg-brand text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-brand/20 hover:translate-y-[-2px] active:translate-y-0 transition-all flex items-center justify-center gap-3 disabled:opacity-70"
                                 >
                                     {formLoading ? <Loader2 className="animate-spin" /> : (isAddModalOpen ? "Create User" : "Save Changes")}
                                     {!formLoading && <Check className="size-4" />}

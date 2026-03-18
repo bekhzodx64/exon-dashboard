@@ -17,7 +17,7 @@ export default function Navbar() {
                         <input
                             type="search"
                             placeholder="Search knowledge base..."
-                            className="h-10 w-full rounded-full border border-zinc-200 bg-zinc-50 pl-10 pr-4 text-sm font-medium outline-none ring-zinc-500/10 transition-all focus:border-zinc-400 focus:ring-4 dark:border-zinc-800 dark:bg-zinc-900 dark:focus:border-zinc-700"
+                            className="h-10 w-full rounded-full border border-zinc-200 bg-zinc-50 pl-10 pr-4 text-sm font-medium outline-none ring-brand/10 transition-all focus:border-brand/40 focus:ring-4 dark:border-zinc-800 dark:bg-zinc-900 dark:focus:border-brand/30"
                         />
                     </div>
                 </div>
@@ -32,7 +32,7 @@ export default function Navbar() {
                     <div className="h-8 w-px bg-zinc-200 dark:bg-zinc-800" />
 
                     <button className="flex items-center gap-3 rounded-2xl p-1.5 text-zinc-700 transition-all hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-900">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-orange-400 to-orange-600 text-white shadow-lg shadow-orange-500/20">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-brand to-brand/60 text-white shadow-lg shadow-brand/20">
                             <User className="size-5" />
                         </div>
                         <div className="hidden text-left md:block">
