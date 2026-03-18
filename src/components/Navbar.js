@@ -1,19 +1,19 @@
 "use client";
 
-import { Bell, ChevronDown, Search, User, CheckCircle2, AlertCircle, Info, ShieldAlert, X } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { Bell, ChevronDown, Search, User, CheckCircle2, AlertCircle, Info, ShieldAlert, X, Settings, LogOut, MessageSquare } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
 import { useNotifications } from "./NotificationProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export default function Navbar() {
     const { data: session } = useSession();
     const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
     const [isNotifyOpen, setIsNotifyOpen] = useState(false);
     const notifyRef = useRef(null);
-    
-    // Handle click outside to close dropdown
+
     useEffect(() => {
         function handleClickOutside(event) {
             if (notifyRef.current && !notifyRef.current.contains(event.target)) {
@@ -126,9 +126,13 @@ export default function Navbar() {
                                         </div>
 
                                         <div className="bg-zinc-50 p-4 text-center">
-                                            <button className="text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-zinc-900 transition-colors">
+                                            <Link 
+                                                href="/notifications"
+                                                onClick={() => setIsNotifyOpen(false)}
+                                                className="text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-zinc-900 transition-colors"
+                                            >
                                                 View all activity
-                                            </button>
+                                            </Link>
                                         </div>
                                     </motion.div>
                             )}
@@ -137,18 +141,17 @@ export default function Navbar() {
 
                     <div className="h-8 w-px bg-zinc-200" />
 
-                    <button className="flex items-center gap-3 rounded-2xl p-1.5 text-zinc-700 transition-all hover:bg-zinc-50">
+                    <div className="flex items-center gap-3 px-2 py-1.5 transition-all">
                         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-brand to-brand/60 text-white shadow-lg shadow-brand/20">
                             <User className="size-5" />
                         </div>
                         <div className="hidden text-left md:block">
-                            <div className="text-sm font-semibold leading-none">{username}</div>
-                            <div className="text-[11px] font-medium uppercase tracking-wider text-zinc-500 opacity-60">
+                            <div className="text-sm font-semibold leading-none text-zinc-900">{username}</div>
+                            <div className="mt-1 text-[10px] font-black uppercase tracking-widest text-zinc-400">
                                 {role.replace("_", " ")}
                             </div>
                         </div>
-                        <ChevronDown className="hidden size-4 text-zinc-400 md:block" />
-                    </button>
+                    </div>
                 </div>
             </div>
         </header>
