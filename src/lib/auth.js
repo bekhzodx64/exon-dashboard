@@ -123,6 +123,16 @@ export const authOptions = {
                         device,
                     },
                 });
+
+                // Create a dynamic notification for the login
+                await prisma.notification.create({
+                    data: {
+                        userId: user.id,
+                        title: "New Login Detected",
+                        message: `A new login was detected from ${browser} on ${os} (IP: ${ip.split(',')[0].trim()})`,
+                        type: "warning"
+                    }
+                });
             } catch (error) {
                 console.error("Error recording login history:", error);
             }

@@ -12,7 +12,8 @@ import {
     Zap,
     ChevronLeft,
     ChevronRight,
-    Search
+    Search,
+    Bell
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -39,6 +40,7 @@ export default function Sidebar({ timeLeft = "1:59:00" }) {
             title: "Navigation",
             items: [
                 { name: "Dashboard", icon: LayoutDashboard, href: "/", roles: ["global_admin", "admin", "employee"] },
+                { name: "Notifications", icon: Bell, href: "/notifications", roles: ["global_admin", "admin", "employee"] },
             ]
         },
         {
@@ -78,7 +80,7 @@ export default function Sidebar({ timeLeft = "1:59:00" }) {
             <div className={cn("flex flex-col h-full", isCollapsed ? "px-3 py-6" : "px-4 py-8")}>
                 {/* Logo & Toggle */}
                 <div className={cn("mb-10 flex items-center transition-all", isCollapsed ? "justify-center" : "gap-3 px-2")}>
-                    <div className="flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-[0.9rem] bg-linear-to-br from-brand to-brand/60 font-black text-white shadow-xl shadow-brand/20">
+                    <div className="shrink-0 flex h-11 w-11 items-center justify-center rounded-[0.9rem] bg-linear-to-br from-brand to-brand/60 font-black text-white shadow-xl shadow-brand/20">
                         EX
                     </div>
                     {!isCollapsed && (
@@ -166,7 +168,7 @@ export default function Sidebar({ timeLeft = "1:59:00" }) {
                                                         : "text-zinc-600 hover:bg-zinc-200/50 hover:text-zinc-900"
                                                 )}
                                             >
-                                                <Icon className={cn("size-5 flex-shrink-0 transition-transform", isActive ? "scale-110" : "")} />
+                                                <Icon className={cn("size-5 shrink-0 transition-transform", isActive ? "scale-110" : "")} />
                                                 {!isCollapsed && (
                                                     <span className="animate-in fade-in slide-in-from-left-2 duration-300">
                                                         {item.name}
@@ -190,7 +192,7 @@ export default function Sidebar({ timeLeft = "1:59:00" }) {
                             isCollapsed ? "justify-center" : ""
                         )}
                     >
-                        <HelpCircle className="size-5 flex-shrink-0" />
+                        <HelpCircle className="size-5 shrink-0" />
                         {!isCollapsed && <span>Help Center</span>}
                     </button>
                     <button
@@ -201,7 +203,7 @@ export default function Sidebar({ timeLeft = "1:59:00" }) {
                             isCollapsed ? "justify-center" : ""
                         )}
                     >
-                        <LogOut className="size-5 flex-shrink-0" />
+                        <LogOut className="size-5 shrink-0" />
                         {!isCollapsed && <span>Logout</span>}
                     </button>
                 </div>
