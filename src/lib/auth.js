@@ -82,4 +82,50 @@ export const authOptions = {
             return session;
         },
     },
+    events: {
+        async signIn({ user }) {
+            try {
+                const { headers: nextHeaders } = await import("next/headers");
+                const headerList = await nextHeaders();
+                const ip = headerList.get("x-forwarded-for") || "127.0.0.1";
+                const userAgent = headerList.get("user-agent") || "unknown";
+
+                const parseUA = (ua) => {
+                    let browser = "Other";
+                    let os = "Other";
+                    let device = "Desktop";
+
+                    if (/chrome/i.test(ua)) browser = "Chrome";
+                    else if (/firefox/i.test(ua)) browser = "Firefox";
+                    else if (/safari/i.test(ua)) browser = "Safari";
+                    else if (/edge/i.test(ua)) browser = "Edge";
+
+                    if (/windows/i.test(ua)) os = "Windows";
+                    else if (/mac/i.test(ua)) os = "macOS";
+                    else if (/linux/i.test(ua)) os = "Linux";
+                    else if (/android/i.test(ua)) os = "Android";
+                    else if (/iphone|ipad|ipod/i.test(ua)) os = "iOS";
+
+                    if (/mobile|android|iphone|ipad|ipod/i.test(ua)) device = "Mobile/Tablet";
+
+                    return { browser, os, device };
+                };
+
+                const { browser, os, device } = parseUA(userAgent);
+
+                await prisma.loginHistory.create({
+                    data: {
+                        userId: user.id,
+                        ip: ip.split(',')[0].trim(), // Handle forwarded-for lists
+                        userAgent,
+                        browser,
+                        os,
+                        device,
+                    },
+                });
+            } catch (error) {
+                console.error("Error recording login history:", error);
+            }
+        },
+    },
 };

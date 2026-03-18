@@ -27,6 +27,12 @@ export async function GET() {
         email: true,
         role: true,
         image: true,
+        loginHistory: {
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 1
+        }
       },
       orderBy: {
         name: "asc",

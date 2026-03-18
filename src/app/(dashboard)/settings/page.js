@@ -12,6 +12,11 @@ import {
     Palette,
     ArrowLeft,
     ChevronRight,
+    History,
+    Monitor,
+    Globe,
+    Smartphone,
+    Tablet,
     Settings
 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -22,7 +27,9 @@ export default function SettingsPage() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: "", text: "" });
     const [mounted, setMounted] = useState(false);
-    const [activeSection, setActiveSection] = useState("overview"); // overview, profile, appearance, security
+    const [activeSection, setActiveSection] = useState("overview"); // overview, profile, appearance, security, history
+    const [loginHistory, setLoginHistory] = useState([]);
+    const [fetchingHistory, setFetchingHistory] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -42,6 +49,25 @@ export default function SettingsPage() {
             }));
         }
     }, [session]);
+
+    const fetchLoginHistory = async () => {
+        setFetchingHistory(true);
+        try {
+            const res = await fetch("/api/auth/history");
+            const data = await res.json();
+            if (res.ok) setLoginHistory(data);
+        } catch (err) {
+            console.error("Failed to fetch history", err);
+        } finally {
+            setFetchingHistory(false);
+        }
+    };
+
+    useEffect(() => {
+        if (session?.user) {
+            fetchLoginHistory();
+        }
+    }, [activeSection, session]);
 
     const colors = [
         { name: "Orange", value: "234 88 12" },
@@ -121,6 +147,13 @@ export default function SettingsPage() {
             desc: "Manage your password and security keys.",
             icon: KeyRound,
             color: "bg-brand",
+        },
+        {
+            id: "history",
+            title: "Sign-in History",
+            desc: "Monitor your session locations and device list.",
+            icon: History,
+            color: "bg-zinc-800",
         }
     ];
 
@@ -235,6 +268,18 @@ export default function SettingsPage() {
                                 <div className="text-sm font-bold text-green-500">Strong</div>
                             </div>
                             <div className="h-10 w-[2px] bg-zinc-200 hidden sm:block" />
+                            <div className="text-right hidden lg:block min-w-32">
+                                <div className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Last Login</div>
+                                <div className="text-sm font-bold text-zinc-900">
+                                    {loginHistory[0] ? new Date(loginHistory[0].createdAt).toLocaleString([], {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    }) : 'N/A'}
+                                </div>
+                            </div>
+                            <div className="h-10 w-[2px] bg-zinc-200 hidden lg:block" />
                             <button 
                                 onClick={() => setActiveSection("profile")}
                                 className="px-6 h-12 rounded-2xl bg-zinc-900 text-white font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
@@ -346,6 +391,85 @@ export default function SettingsPage() {
                                     <p className="text-[10px] font-bold text-red-500/60 uppercase tracking-widest px-1">Requires 8+ characters for strong protection</p>
                                 </div>
                             </div>
+                        </div>
+                    )}
+                    {activeSection === "history" && (
+                        <div className="rounded-[2.5rem] border border-border bg-white p-10 shadow-sm animate-in fade-in slide-in-from-right-4 duration-500">
+                             <div className="flex items-center justify-between mb-8">
+                                <h3 className="text-2xl font-black flex items-center gap-4 text-zinc-950">
+                                     <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-zinc-900 text-white">
+                                         <History className="size-5" />
+                                     </div>
+                                     Sign-in History
+                                 </h3>
+                                 <button 
+                                     onClick={fetchLoginHistory}
+                                     disabled={fetchingHistory}
+                                     className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-brand transition-colors disabled:opacity-50"
+                                 >
+                                     {fetchingHistory ? "Refreshing..." : "Refresh List"}
+                                 </button>
+                            </div>
+
+                            <div className="space-y-4">
+                                {loginHistory.length === 0 && !fetchingHistory && (
+                                    <div className="py-20 text-center space-y-4">
+                                        <div className="mx-auto h-16 w-16 rounded-full bg-zinc-50 flex items-center justify-center">
+                                            <Monitor className="size-8 text-zinc-200" />
+                                        </div>
+                                        <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest">No login history found</p>
+                                    </div>
+                                )}
+
+                                {loginHistory.map((item, idx) => {
+                                    const date = new Date(item.createdAt);
+                                    const timeStr = date.toLocaleString();
+                                    
+                                    // Icon logic
+                                    let DeviceIcon = Monitor;
+                                    if (item.device?.toLowerCase().includes('mobile')) DeviceIcon = Smartphone;
+                                    if (item.device?.toLowerCase().includes('tablet')) DeviceIcon = Tablet;
+
+                                    return (
+                                        <div 
+                                            key={item.id} 
+                                            className="group flex items-center gap-6 p-6 rounded-3xl border border-border hover:border-brand/20 hover:bg-zinc-50/50 transition-all"
+                                        >
+                                            <div className="h-14 w-14 flex items-center justify-center rounded-2xl bg-zinc-100 group-hover:bg-brand/10 group-hover:text-brand transition-colors">
+                                                <DeviceIcon className="size-6" />
+                                            </div>
+                                            
+                                            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div>
+                                                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">Device & Browser</p>
+                                                    <p className="text-sm font-bold text-zinc-900">{item.os} • {item.browser}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">IP Address</p>
+                                                    <p className="text-sm font-bold text-zinc-600 flex items-center gap-2">
+                                                        <Globe className="size-3" />
+                                                        {item.ip}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">Login Time</p>
+                                                    <p className="text-sm font-bold text-zinc-600">{timeStr}</p>
+                                                </div>
+                                            </div>
+
+                                            {idx === 0 && (
+                                                <div className="hidden sm:block">
+                                                    <span className="px-3 py-1.5 rounded-full bg-green-100 text-green-600 text-[10px] font-black uppercase tracking-widest">Current</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            
+                            <p className="mt-8 text-[10px] font-bold text-zinc-400 uppercase tracking-widest text-center">
+                                Showing last 20 login attempts. If you see unrecognized activity, change your password immediately.
+                            </p>
                         </div>
                     )}
                 </div>

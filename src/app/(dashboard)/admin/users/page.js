@@ -241,6 +241,7 @@ export default function UserManagement() {
                             <tr className="bg-zinc-50/50 text-[10px] font-black uppercase tracking-widest text-zinc-400">
                                 <th className="px-8 py-5">Full Name & Email</th>
                                 <th className="px-8 py-5">System Role</th>
+                                <th className="px-8 py-5">Last Access</th>
                                 <th className="px-8 py-5 text-right">Actions</th>
                             </tr>
                         </thead>
@@ -276,6 +277,29 @@ export default function UserManagement() {
                                                 }`}>
                                                 {user.role}
                                             </span>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            {user.loginHistory && user.loginHistory.length > 0 ? (
+                                                <div className="flex flex-col">
+                                                    <div className="flex items-center gap-1.5 text-zinc-900 dark:text-zinc-50 font-bold whitespace-nowrap">
+                                                        <Clock className="size-3 text-zinc-400" />
+                                                        {new Date(user.loginHistory[0].createdAt).toLocaleString([], {
+                                                            day: '2-digit',
+                                                            month: '2-digit',
+                                                            year: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit'
+                                                        })}
+                                                    </div>
+                                                    <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
+                                                        {user.loginHistory[0].browser} • {user.loginHistory[0].os}
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-300">
+                                                    Never
+                                                </span>
+                                            )}
                                         </td>
                                         <td className="px-8 py-5 text-right">
                                              <div className="flex justify-end gap-2">
