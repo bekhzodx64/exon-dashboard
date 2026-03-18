@@ -11,17 +11,11 @@ export default async function DashboardLayout({ children }) {
     redirect("/login");
   }
 
-  const currentUser = {
-    role: session.user.role,
-    name: session.user.name || session.user.email,
-    timeLeft: "01:54:12" // Hardcoded for now, as in original
-  };
-
   return (
     <div className="flex min-h-screen">
-      <Sidebar role={currentUser.role} timeLeft={currentUser.timeLeft} />
+      <Sidebar timeLeft={session.user.timeLeft || "01:54:12"} />
       <div className="md:ml-64 flex-1">
-        <Navbar role={currentUser.role} username={currentUser.name} />
+        <Navbar />
         <main className="min-h-[calc(100vh-64px)] p-8">
           {children}
         </main>

@@ -1,8 +1,12 @@
 "use client";
 
 import { Bell, ChevronDown, Search, User } from "lucide-react";
+import { useSession } from "next-auth/react";
 
-export default function Navbar({ role = "employee", username = "Alex Smith" }) {
+export default function Navbar() {
+    const { data: session } = useSession();
+    const username = session?.user?.name || "User";
+    const role = session?.user?.role || "employee";
     return (
         <header className="sticky top-0 z-30 h-16 w-full border-b border-zinc-200 bg-white/80 px-6 backdrop-blur-md dark:border-zinc-800 dark:bg-black/80">
             <div className="flex h-full items-center justify-between">

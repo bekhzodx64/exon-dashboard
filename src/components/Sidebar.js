@@ -15,7 +15,7 @@ import {
     Truck,
     Zap
 } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -25,7 +25,9 @@ function cn(...inputs) {
     return twMerge(clsx(inputs));
 }
 
-export default function Sidebar({ role = "employee", timeLeft = "1:59:00" }) {
+export default function Sidebar({ timeLeft = "1:59:00" }) {
+    const { data: session } = useSession();
+    const role = session?.user?.role || "employee";
     const pathname = usePathname();
     const [isKnowledgeOpen, setIsKnowledgeOpen] = useState(false);
 
