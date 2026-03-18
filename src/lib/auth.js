@@ -50,6 +50,7 @@ export const authOptions = {
                     name: user.name,
                     email: user.email,
                     role: user.role,
+                    brandColor: user.brandColor,
                 };
             },
         }),
@@ -61,10 +62,14 @@ export const authOptions = {
                 token.id = user.id;
                 token.name = user.name;
                 token.email = user.email;
+                token.brandColor = user.brandColor;
             }
             if (trigger === "update" && session?.user) {
                 token.name = session.user.name;
                 token.email = session.user.email;
+                if (session.user.brandColor) {
+                    token.brandColor = session.user.brandColor;
+                }
             }
             return token;
         },
@@ -72,6 +77,7 @@ export const authOptions = {
             if (token) {
                 session.user.role = token.role;
                 session.user.id = token.id;
+                session.user.brandColor = token.brandColor;
             }
             return session;
         },

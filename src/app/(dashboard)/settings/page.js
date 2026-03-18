@@ -43,6 +43,7 @@ export default function SettingsPage() {
                 ...prev,
                 name: session.user.name || "",
                 email: session.user.email || "",
+                brandColor: session.user.brandColor || "234 88 12",
             }));
         }
     }, [session]);
@@ -73,6 +74,7 @@ export default function SettingsPage() {
                     name: formData.name,
                     email: formData.email,
                     role: session.user.role,
+                    brandColor: formData.brandColor,
                     ...(formData.password && { password: formData.password })
                 }),
             });
@@ -90,6 +92,7 @@ export default function SettingsPage() {
                     ...session.user,
                     name: formData.name,
                     email: formData.email,
+                    brandColor: formData.brandColor,
                 }
             });
 

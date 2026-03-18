@@ -22,7 +22,7 @@ export async function PUT(req, { params }) {
   const { id } = await params;
 
   try {
-    const { name, email, role, password } = await req.json();
+    const { name, email, role, password, brandColor } = await req.json();
 
     // 1. Fetch target user to check their current role
     const targetUser = await prisma.user.findUnique({
@@ -70,6 +70,7 @@ export async function PUT(req, { params }) {
       name,
       email,
       role,
+      brandColor,
     };
 
     if (password) {
@@ -86,6 +87,7 @@ export async function PUT(req, { params }) {
       name: updatedUser.name,
       email: updatedUser.email,
       role: updatedUser.role,
+      brandColor: updatedUser.brandColor,
     });
   } catch (error) {
     if (error.code === 'P2002') {

@@ -47,7 +47,8 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
-  role          String    @default("employee") // admin or employee
+  role          String    @default("employee") // global_admin, admin or employee
+  brandColor    String    @default("234 88 12")
   accounts      Account[]
   sessions      Session[]
 }
