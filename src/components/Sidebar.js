@@ -18,6 +18,7 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { useSidebar } from "./SidebarProvider";
 
@@ -25,15 +26,57 @@ function cn(...inputs) {
     return twMerge(clsx(inputs));
 }
 
-export default function Sidebar({ timeLeft = "1:59:00" }) {
+export default function Sidebar() {
     const { isCollapsed, toggleSidebar } = useSidebar();
     const { data: session } = useSession();
     const role = session?.user?.role || "employee";
     const pathname = usePathname();
+    const [displayTime, setDisplayTime] = useState("--:--:--");
+    const [progress, setProgress] = useState(100);
 
     const handleLogout = () => {
         signOut({ callbackUrl: "/login" });
     };
+
+    useEffect(() => {
+        if (!session?.user?.accessExpiresAt) {
+            setDisplayTime("UNLIMITED");
+            setProgress(100);
+            return;
+        }
+
+        const expiryDate = new Date(session.user.accessExpiresAt);
+        
+        const updateTimer = () => {
+            const now = new Date();
+            const diff = expiryDate - now;
+
+            if (diff <= 0) {
+                setDisplayTime("00:00:00");
+                setProgress(0);
+                clearInterval(interval);
+                handleLogout();
+                return;
+            }
+
+            const h = Math.floor(diff / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            setDisplayTime(
+                `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+            );
+
+            // Simple progress logic (max 8 hours for bar)
+            const eightHours = 8 * 60 * 60 * 1000;
+            const currentProgress = Math.min(100, (diff / eightHours) * 100);
+            setProgress(currentProgress);
+        };
+
+        updateTimer();
+        const interval = setInterval(updateTimer, 1000);
+        return () => clearInterval(interval);
+    }, [session?.user?.accessExpiresAt]);
 
     const sections = [
         {
@@ -117,15 +160,18 @@ export default function Sidebar({ timeLeft = "1:59:00" }) {
                                 </div>
                             )}
                             {isCollapsed ? (
-                                <Clock className="size-5 text-zinc-400" title={timeLeft} />
+                                <Clock className="size-5 text-zinc-400" title={displayTime} />
                             ) : (
                                 <div className="text-2xl font-black font-mono tracking-tighter w-full animate-in fade-in duration-300">
-                                    {timeLeft}
+                                    {displayTime}
                                 </div>
                             )}
                             {!isCollapsed && (
                                 <div className="mt-2 h-1.5 w-full rounded-full bg-zinc-800 overflow-hidden animate-in fade-in duration-300">
-                                    <div className="h-full w-[80%] bg-brand transition-all duration-1000" />
+                                    <div 
+                                        className="h-full bg-brand transition-all duration-1000" 
+                                        style={{ width: `${progress}%` }}
+                                    />
                                 </div>
                             )}
                         </div>

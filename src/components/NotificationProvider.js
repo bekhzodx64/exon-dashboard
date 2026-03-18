@@ -66,13 +66,19 @@ export function NotificationProvider({ children }) {
   };
 
   const markAllAsRead = async () => {
-    // We can add a bulk API route later, for now we do local then background
     try {
+      // Optimistic update
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
       setUnreadCount(0);
-      // Optional: fetch("/api/notifications/read-all", { method: "POST" });
+      
+      const res = await fetch("/api/notifications", { method: "PATCH" });
+      if (!res.ok) {
+          // Revert if failed
+          fetchNotifications();
+      }
     } catch (err) {
       console.error("Failed to mark all as read", err);
+      fetchNotifications();
     }
   };
 

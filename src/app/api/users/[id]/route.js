@@ -88,6 +88,7 @@ export async function PUT(req, { params }) {
       email: updatedUser.email,
       role: updatedUser.role,
       brandColor: updatedUser.brandColor,
+      accessExpiresAt: updatedUser.accessExpiresAt,
     });
   } catch (error) {
     if (error.code === 'P2002') {

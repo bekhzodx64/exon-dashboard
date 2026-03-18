@@ -1,5 +1,6 @@
 import { SidebarProvider } from "../../components/SidebarProvider";
 import { NotificationProvider } from "../../components/NotificationProvider";
+import SecurityProtector from "../../components/SecurityProtector";
 import DashboardClientLayout from "../../components/DashboardClientLayout";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
@@ -14,11 +15,13 @@ export default async function DashboardLayout({ children }) {
 
   return (
     <SidebarProvider>
-      <NotificationProvider>
-        <DashboardClientLayout sessionUser={session.user}>
-          {children}
-        </DashboardClientLayout>
-      </NotificationProvider>
+      <SecurityProtector>
+        <NotificationProvider>
+          <DashboardClientLayout sessionUser={session.user}>
+            {children}
+          </DashboardClientLayout>
+        </NotificationProvider>
+      </SecurityProtector>
     </SidebarProvider>
   );
 }

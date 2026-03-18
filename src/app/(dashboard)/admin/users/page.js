@@ -20,6 +20,12 @@ import {
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+function cn(...inputs) {
+    return twMerge(clsx(inputs));
+}
 
 export default function UserManagement() {
     const { data: session } = useSession();
@@ -29,13 +35,18 @@ export default function UserManagement() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [toast, setToast] = useState({ show: false, message: "", type: "success" });
 
     // Modal state
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isAccessModalOpen, setIsAccessModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [accessUser, setAccessUser] = useState(null);
     const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
+    const [customMinutes, setCustomMinutes] = useState("");
+    const [now, setNow] = useState(new Date());
 
     // Form states
     const [formData, setFormData] = useState({
@@ -59,6 +70,55 @@ export default function UserManagement() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleUpdateAccess = async (user, minutes) => {
+        setFormLoading(true);
+        try {
+            const res = await fetch(`/api/admin/users/${user.id}/access`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ durationMinutes: minutes }),
+            });
+            if (!res.ok) throw new Error("Failed to update access");
+            
+            setIsAccessModalOpen(false);
+            fetchUsers();
+            showToast(`Access updated for ${user.name}`, "success");
+        } catch (err) {
+            showToast(err.message, "error");
+        } finally {
+            setFormLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (toast.show) {
+            const timer = setTimeout(() => setToast({ ...toast, show: false }), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [toast.show]);
+
+    // Live countdown timer effect for the whole table
+    useEffect(() => {
+        const timer = setInterval(() => setNow(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const formatTimeRemaining = (expiryDate) => {
+        if (!expiryDate) return "Unlimited";
+        const diff = new Date(expiryDate) - now;
+        if (diff <= 0) return "Expired";
+
+        const hours = Math.floor(diff / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+
+        return `${hours > 0 ? `${hours}h ` : ""}${minutes}m ${seconds}s`;
+    };
+
+    const showToast = (message, type = "success") => {
+        setToast({ show: true, message, type });
     };
 
     useEffect(() => {
@@ -140,8 +200,9 @@ export default function UserManagement() {
             setIsDeleteConfirmOpen(false);
             setUserToDelete(null);
             fetchUsers();
+            showToast("User deleted successfully", "success");
         } catch (err) {
-            alert(err.message);
+            showToast(err.message, "error");
         } finally {
             setFormLoading(false);
         }
@@ -241,14 +302,15 @@ export default function UserManagement() {
                             <tr className="bg-zinc-50/50 text-[10px] font-black uppercase tracking-widest text-zinc-400">
                                 <th className="px-8 py-5">Full Name & Email</th>
                                 <th className="px-8 py-5">System Role</th>
-                                <th className="px-8 py-5">Last Access</th>
+                                <th className="px-8 py-5">Last Login</th>
+                                <th className="px-8 py-5">Access Status</th>
                                 <th className="px-8 py-5 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-zinc-100 dark:divide-zinc-900">
                             {loading ? (
                                 <tr>
-                                    <td colSpan="3" className="px-8 py-10 text-center">
+                                    <td colSpan="5" className="px-8 py-10 text-center">
                                         <div className="flex flex-col items-center gap-2">
                                             <Loader2 className="size-6 animate-spin text-brand" />
                                             <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">Loading Users...</span>
@@ -257,7 +319,7 @@ export default function UserManagement() {
                                 </tr>
                             ) : filteredUsers.length === 0 ? (
                                 <tr>
-                                    <td colSpan="3" className="px-8 py-10 text-center text-zinc-400 font-bold uppercase tracking-widest text-xs">
+                                    <td colSpan="5" className="px-8 py-10 text-center text-zinc-400 font-bold uppercase tracking-widest text-xs">
                                         No users found
                                     </td>
                                 </tr>
@@ -301,17 +363,40 @@ export default function UserManagement() {
                                                 </span>
                                             )}
                                         </td>
+                                        <td className="px-8 py-5">
+                                            <div className="flex flex-col">
+                                                <span className={`text-xs font-black uppercase tracking-widest ${user.accessExpiresAt && new Date(user.accessExpiresAt) < now ? 'text-red-500' : 'text-zinc-900 group-hover:text-orange-600 transition-colors'}`}>
+                                                    {formatTimeRemaining(user.accessExpiresAt)}
+                                                </span>
+                                                {user.accessExpiresAt && new Date(user.accessExpiresAt) >= now && (
+                                                    <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-0.5">
+                                                        Until {new Date(user.accessExpiresAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
                                         <td className="px-8 py-5 text-right">
                                              <div className="flex justify-end gap-2">
+                                                 {/* ACCESS TIMER BUTTON */}
+                                                 {((currentUser?.role === 'global_admin' && currentUser?.id !== user.id) || 
+                                                    (currentUser?.role === 'admin' && user.role === 'employee')) && (
+                                                      <button
+                                                          onClick={() => { setAccessUser(user); setIsAccessModalOpen(true); }}
+                                                          title="Manage Timed Access"
+                                                          className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-50 text-zinc-500 hover:bg-orange-50 hover:text-orange-600 dark:bg-zinc-900 transition-colors"
+                                                      >
+                                                          <Clock className="size-4" />
+                                                      </button>
+                                                  )}
                                                  {/* EDIT BUTTON LOGIC:
-                                                     1. global_admin can edit anyone
-                                                     2. admin can edit themselves
-                                                     3. admin can edit employee
-                                                     4. admin CANNOT edit other admins or global_admins
+                                                     1. Users cannot edit themselves here (use settings instead)
+                                                     2. global_admin can edit any OTHER user
+                                                     3. admin can edit any OTHER employee
                                                  */}
-                                                 {(currentUser?.role === 'global_admin' || 
-                                                  currentUser?.id === user.id || 
-                                                  (currentUser?.role === 'admin' && user.role === 'employee')) && (
+                                                 {(currentUser?.id !== user.id) && (
+                                                   currentUser?.role === 'global_admin' || 
+                                                   (currentUser?.role === 'admin' && user.role === 'employee')
+                                                 ) && (
                                                      <button
                                                          onClick={() => openEditModal(user)}
                                                          className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-50 text-zinc-500 hover:bg-brand/5 hover:text-brand dark:bg-zinc-900 dark:hover:bg-brand/10 transition-colors"
@@ -349,7 +434,7 @@ export default function UserManagement() {
             {/* MODALS */}
             <AnimatePresence>
                 {(isAddModalOpen || isEditModalOpen) && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div key="user-form-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -469,7 +554,7 @@ export default function UserManagement() {
                 )}
 
                 {isDeleteConfirmOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div key="delete-confirm-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -511,6 +596,113 @@ export default function UserManagement() {
                         </motion.div>
                     </div>
                 )}
+                {isAccessModalOpen && (
+                    <div key="access-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsAccessModalOpen(false)}
+                            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative w-full max-w-sm rounded-[2.5rem] bg-white p-10 shadow-2xl dark:bg-zinc-950"
+                        >
+                            <div className="flex flex-col items-center text-center space-y-4">
+                                <div className="h-16 w-16 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center dark:bg-orange-900/10">
+                                    <Clock className="size-8" />
+                                </div>
+                                <h2 className="text-2xl font-black">Timed Access</h2>
+                                <p className="text-zinc-500 font-medium">
+                                    Set access duration for <span className="text-zinc-900 dark:text-zinc-50 font-bold">{accessUser?.name}</span>
+                                </p>
+                            </div>
+
+                            <div className="mt-8 grid grid-cols-1 gap-3">
+                                {[
+                                    { label: "1 Hour Access", mins: 60 },
+                                    { label: "8 Hours (Shift)", mins: 480 },
+                                    { label: "24 Hours Access", mins: 1440 },
+                                    { label: "Unlimited Access", mins: null },
+                                ].map((opt, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => handleUpdateAccess(accessUser, opt.mins)}
+                                        disabled={formLoading}
+                                        className="h-12 w-full rounded-2xl bg-zinc-50 text-zinc-900 font-bold text-xs uppercase tracking-widest hover:bg-zinc-100 transition-all flex items-center justify-center gap-2"
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+
+                                <div className="pt-4 border-t border-zinc-100 dark:border-zinc-900 mt-2 space-y-3">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-1 text-left block">Custom Duration (Minutes)</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            value={customMinutes}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                if (val === "" || parseInt(val) >= 0) {
+                                                    setCustomMinutes(val);
+                                                }
+                                            }}
+                                            placeholder="Enter minutes..."
+                                            className="h-12 flex-1 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-transparent focus:border-orange-500/50 outline-none px-4 text-sm font-bold placeholder:text-zinc-400 placeholder:font-normal"
+                                        />
+                                        <button
+                                            onClick={() => {
+                                                if (customMinutes > 0) handleUpdateAccess(accessUser, parseInt(customMinutes));
+                                            }}
+                                            disabled={!customMinutes || customMinutes <= 0 || formLoading}
+                                            className="h-12 px-6 rounded-2xl bg-orange-600 text-white font-black text-xs uppercase tracking-widest hover:bg-orange-700 transition-all disabled:opacity-50"
+                                        >
+                                            Set
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => { setIsAccessModalOpen(false); setCustomMinutes(""); }}
+                                    className="mt-2 h-12 w-full rounded-2xl border border-zinc-100 text-zinc-400 font-bold text-xs uppercase tracking-widest hover:bg-zinc-50 transition-all"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+
+                {/* TOAST SYSTEM */}
+                <AnimatePresence>
+                    {toast.show && (
+                        <motion.div
+                            key="toast-notification"
+                            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="fixed bottom-10 right-10 z-[100]"
+                        >
+                            <div className={cn(
+                                "flex items-center gap-3 rounded-2xl px-6 py-4 shadow-2xl backdrop-blur-xl border border-white/20",
+                                toast.type === "success" 
+                                    ? "bg-emerald-500/90 text-white" 
+                                    : "bg-red-500/90 text-white"
+                            )}>
+                                {toast.type === "success" ? (
+                                    <Check className="size-5" />
+                                ) : (
+                                    <AlertCircle className="size-5" />
+                                )}
+                                <span className="text-sm font-black uppercase tracking-widest">{toast.message}</span>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </AnimatePresence>
         </div>
     );

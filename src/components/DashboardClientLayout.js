@@ -11,9 +11,7 @@ export default function DashboardClientLayout({ children, sessionUser }) {
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar 
-        timeLeft={sessionUser?.timeLeft || "01:54:12"} 
-      />
+      <Sidebar />
       <div 
         className={twMerge(
           "flex-1 transition-all duration-300 ease-in-out",

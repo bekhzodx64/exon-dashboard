@@ -44,6 +44,12 @@ export const authOptions = {
                     throw new Error("Invalid password");
                 }
 
+                // Add check for expired access
+                if (user.accessExpiresAt && new Date(user.accessExpiresAt) < new Date()) {
+                    console.log("LOGIN_DEBUG: Access EXPIRED for user");
+                    throw new Error("Your access period has expired. Please contact administration.");
+                }
+
                 console.log("LOGIN_DEBUG: Login SUCCESS for user role:", user.role);
                 return {
                     id: user.id,
@@ -51,6 +57,7 @@ export const authOptions = {
                     email: user.email,
                     role: user.role,
                     brandColor: user.brandColor,
+                    accessExpiresAt: user.accessExpiresAt,
                 };
             },
         }),
@@ -63,6 +70,7 @@ export const authOptions = {
                 token.name = user.name;
                 token.email = user.email;
                 token.brandColor = user.brandColor;
+                token.accessExpiresAt = user.accessExpiresAt;
             }
             if (trigger === "update" && session?.user) {
                 token.name = session.user.name;
@@ -78,6 +86,7 @@ export const authOptions = {
                 session.user.role = token.role;
                 session.user.id = token.id;
                 session.user.brandColor = token.brandColor;
+                session.user.accessExpiresAt = token.accessExpiresAt;
             }
             return session;
         },

@@ -53,6 +53,7 @@ model User {
   sessions      Session[]
   loginHistory  LoginHistory[]
   notifications Notification[]
+  accessExpiresAt DateTime? // Timed access
 }
 
 model Notification {

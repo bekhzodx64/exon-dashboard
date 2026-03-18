@@ -27,6 +27,7 @@ export async function GET() {
         email: true,
         role: true,
         image: true,
+        accessExpiresAt: true,
         loginHistory: {
           orderBy: {
             createdAt: "desc"
@@ -95,6 +96,7 @@ export async function POST(req) {
       name: newUser.name,
       email: newUser.email,
       role: newUser.role,
+      accessExpiresAt: newUser.accessExpiresAt,
     });
   } catch (error) {
     console.error("CREATE USER ERROR:", error);

@@ -55,3 +55,23 @@ export async function POST(req) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export async function PATCH() {
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  try {
+    await prisma.notification.updateMany({
+      where: { 
+        userId: session.user.id,
+        isRead: false 
+      },
+      data: { isRead: true },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("MARK ALL READ ERROR:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
