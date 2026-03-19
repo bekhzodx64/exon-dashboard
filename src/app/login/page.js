@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Globe, Lock, Mail, ShieldCheck, Zap } from "lucide-react";
+import { ArrowRight, Lock, Mail, ShieldCheck } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -102,7 +102,6 @@ export default function LoginPage() {
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-1 flex justify-between items-center">
                                 Password
-                                <span className="text-[9px] cursor-pointer hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors">Forgot Password?</span>
                             </label>
                             <div className="relative group">
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
@@ -128,24 +127,7 @@ export default function LoginPage() {
                             {!loading && <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />}
                         </button>
                     </form>
-
-                    <div className="mt-10 pt-10 border-t border-zinc-100 dark:border-zinc-900 grid grid-cols-3 gap-4">
-                        {[
-                            { icon: ShieldCheck, label: "Secure" },
-                            { icon: Globe, label: "Global" },
-                            { icon: Zap, label: "Fast" },
-                        ].map((item, i) => (
-                            <div key={i} className="flex flex-col items-center gap-2 opacity-40 hover:opacity-100 transition-opacity">
-                                <item.icon className="size-4" />
-                                <span className="text-[9px] font-black uppercase tracking-widest">{item.label}</span>
-                            </div>
-                        ))}
-                    </div>
                 </div>
-
-                <p className="text-center mt-8 text-zinc-400 dark:text-zinc-600 text-[10px] font-bold uppercase tracking-widest">
-                    Internal Use Only • Authorized Access Required
-                </p>
             </motion.div>
         </div>
     );
