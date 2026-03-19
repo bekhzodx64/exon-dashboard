@@ -12,8 +12,7 @@ import {
     Zap,
     ChevronLeft,
     ChevronRight,
-    Search,
-    Bell
+    Search
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -83,7 +82,6 @@ export default function Sidebar() {
             title: "Navigation",
             items: [
                 { name: "Dashboard", icon: LayoutDashboard, href: "/", roles: ["global_admin", "admin", "employee"] },
-                { name: "Notifications", icon: Bell, href: "/notifications", roles: ["global_admin", "admin", "employee"] },
             ]
         },
         {

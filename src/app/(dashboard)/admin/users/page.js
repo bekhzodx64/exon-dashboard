@@ -514,28 +514,27 @@ export default function UserManagement() {
                                 </div>
 
                                 {/* ROLE SELECTION UI:
-                                    1. Hide entire section for any user (admin/global_admin) editing themselves
-                                    2. Show for new users or editing others
+                                    1. ONLY show for global_admin
+                                    2. Regular admins can only create/manage employees (role is fixed)
+                                    3. Hide when any user is editing themselves
                                 */}
-                                {(isAddModalOpen || (selectedUser?.id !== currentUser?.id)) && (
+                                {currentUser?.role === 'global_admin' && (isAddModalOpen || (selectedUser?.id !== currentUser?.id)) && (
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-1">System Role</label>
-                                        <div className={`grid ${currentUser?.role === 'global_admin' ? 'grid-cols-2' : 'grid-cols-1'} gap-3`}>
-                                            {['employee', 'admin']
-                                                .filter(role => currentUser?.role === 'global_admin' || role === 'employee')
-                                                .map(role => (
-                                                    <button
-                                                        key={role}
-                                                        type="button"
-                                                        onClick={() => setFormData({ ...formData, role })}
-                                                        className={`h-11 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${formData.role === role
-                                                            ? 'bg-brand text-white shadow-lg'
-                                                            : 'bg-zinc-50 text-zinc-400 dark:bg-zinc-900 hover:bg-zinc-100'
-                                                            }`}
-                                                    >
-                                                        {role.replace('_', ' ')}
-                                                    </button>
-                                                ))}
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {['employee', 'admin'].map(role => (
+                                                <button
+                                                    key={role}
+                                                    type="button"
+                                                    onClick={() => setFormData({ ...formData, role })}
+                                                    className={`h-11 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${formData.role === role
+                                                        ? 'bg-brand text-white shadow-lg'
+                                                        : 'bg-zinc-50 text-zinc-400 dark:bg-zinc-900 hover:bg-zinc-100'
+                                                        }`}
+                                                >
+                                                    {role.replace('_', ' ')}
+                                                </button>
+                                            ))}
                                         </div>
                                     </div>
                                 )}
