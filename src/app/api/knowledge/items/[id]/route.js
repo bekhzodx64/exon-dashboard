@@ -28,3 +28,30 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export async function PATCH(req, { params }) {
+  const session = await checkAdmin();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { id } = await params;
+    const { title, content, order } = await req.json();
+
+    const item = await prisma.knowledgeItem.update({
+      where: { id },
+      data: { 
+        title, 
+        content,
+        order: order !== undefined ? order : undefined
+      }
+    });
+
+    return NextResponse.json(item);
+  } catch (error) {
+    console.error("PATCH ITEM ERROR:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+

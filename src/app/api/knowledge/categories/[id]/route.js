@@ -39,3 +39,26 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export async function PATCH(req, { params }) {
+  const session = await checkAdmin();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { id } = await params;
+    const { name, icon } = await req.json();
+
+    const category = await prisma.knowledgeCategory.update({
+      where: { id },
+      data: { name, icon: icon || undefined }
+    });
+
+    return NextResponse.json(category);
+  } catch (error) {
+    console.error("PATCH CATEGORY ERROR:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
