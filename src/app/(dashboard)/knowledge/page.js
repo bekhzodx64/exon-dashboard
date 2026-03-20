@@ -8,21 +8,30 @@ import {
 import {
     AlertTriangle,
     BookOpen,
+    BookOpenCheck,
     Check,
     ChevronDown,
     ChevronUp,
     Clock,
     FileText,
+    Folder,
+    FolderOpen,
+    Grape,
     Layout,
+    LayoutGrid,
     Loader2,
+    MoreVertical,
+    MoveRight,
     Package,
     Pause,
     Pencil,
     Play,
     Plus,
     Search,
+    Sparkles,
     Square,
     Trash2,
+    Volume2,
     X
 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -301,33 +310,21 @@ export default function KnowledgeBase() {
     );
 
     return (
-        <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-
-            {/* Header section */}
-            <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-                <div className="space-y-3">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-zinc-950 px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-white">
-                        <BookOpen className="size-3.5" />
-                        Learning Center
-                    </div>
-                    <h1 className="text-4xl font-black tracking-tight text-zinc-900 md:text-5xl">
-                        Knowledge Base
-                    </h1>
-                    <p className="max-w-xl text-zinc-500 font-medium">
-                        Corporate library for training modules, process descriptions, and instructions.
-                    </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-4 items-center">
-                    <div className="relative w-full sm:w-64">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-zinc-400" />
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Quick search..."
-                            className="h-12 w-full rounded-2xl border border-zinc-100 bg-white pl-12 pr-4 text-sm font-bold shadow-sm transition-all focus:border-zinc-300 outline-none"
-                        />
+        <div className="min-h-screen bg-[#F9FAFB] p-6 lg:p-12 font-sans selection:bg-orange-100 selection:text-orange-900">
+            {/* Header Section */}
+            <div className="max-w-7xl mx-auto mb-16 px-4">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div className="space-y-4">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-100">
+                            <Sparkles className="size-3.5 text-orange-600" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-orange-700">Educational Hub</span>
+                        </div>
+                        <h1 className="text-5xl lg:text-6xl font-black tracking-tight text-zinc-900">
+                            Knowledge <span className="text-orange-500">Base</span>
+                        </h1>
+                        <p className="text-lg text-zinc-500 font-medium max-w-2xl leading-relaxed">
+                            Everything you need to know about our processes, guidelines, and instructions in one friendly place.
+                        </p>
                     </div>
                     {isAdmin && (
                         <button
@@ -336,91 +333,77 @@ export default function KnowledgeBase() {
                                 setCatName("");
                                 setIsCatModalOpen(true);
                             }}
-                            className="flex h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-2xl bg-zinc-950 px-6 font-black text-xs text-white uppercase tracking-widest shadow-xl transition-transform hover:scale-105 active:scale-95"
+                            className="group flex items-center gap-3 rounded-2xl bg-zinc-950 px-8 py-4 text-white transition-all hover:bg-zinc-800 hover:shadow-xl hover:-translate-y-1 active:scale-95"
                         >
-                            <Plus className="size-4" />
-                            New Category
+                            <Plus className="size-5 transition-transform group-hover:rotate-90" />
+                            <span className="font-bold tracking-tight">Create Category</span>
                         </button>
                     )}
                 </div>
             </div>
 
             {loading ? (
-                <div className="flex flex-col items-center justify-center py-20 space-y-4">
-                    <Loader2 className="size-10 animate-spin text-zinc-300" />
-                    <span className="text-xs font-black uppercase tracking-widest text-zinc-400">Loading Library...</span>
+                <div className="flex h-[400px] items-center justify-center">
+                    <div className="flex flex-col items-center gap-4">
+                        <Loader2 className="size-12 animate-spin text-orange-500" />
+                        <span className="text-xs font-black uppercase tracking-widest text-zinc-400">Opening Library...</span>
+                    </div>
                 </div>
             ) : categories.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-24 rounded-[3rem] border border-dashed border-zinc-200 bg-zinc-50/50">
-                    <Package className="size-12 text-zinc-200 mb-4" />
-                    <h3 className="text-xl font-black text-zinc-400">Library is Empty</h3>
-                    <p className="text-zinc-400 mt-1">Start by creating your first category.</p>
+                <div className="max-w-7xl mx-auto flex flex-col items-center justify-center py-24 rounded-[3rem] border-2 border-dashed border-zinc-200 bg-white">
+                    <div className="size-20 rounded-3xl bg-zinc-50 flex items-center justify-center mb-6">
+                        <Package className="size-10 text-zinc-300" />
+                    </div>
+                    <h3 className="text-2xl font-black text-zinc-900">Library is Empty</h3>
+                    <p className="text-zinc-500 font-medium mt-1">Start by creating your first category to organize documents.</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 gap-8">
+                <div className="max-w-7xl mx-auto space-y-8">
                     {filteredCategories.map((cat) => (
-                        <div key={cat.id} className="group overflow-hidden rounded-[3rem] border border-zinc-100 bg-white shadow-xl transition-all hover:border-zinc-200">
-                            <div
+                        <div 
+                            key={cat.id} 
+                            className={`group rounded-[2.5rem] transition-all duration-500 ${expandedCat === cat.id ? 'bg-white shadow-2xl ring-1 ring-zinc-100 p-8 pt-6' : 'bg-transparent text-zinc-900'}`}
+                        >
+                            {/* Category Banner Card */}
+                            <div 
                                 onClick={() => setExpandedCat(expandedCat === cat.id ? null : cat.id)}
-                                className="flex cursor-pointer items-center justify-between p-8 sm:p-10"
+                                className={`flex items-center justify-between cursor-pointer group/card transition-all rounded-[2rem] p-6 ${expandedCat === cat.id ? 'bg-zinc-50/50 mb-8 px-8' : 'bg-white shadow-sm border border-zinc-100 hover:shadow-md hover:border-orange-200'}`}
                             >
                                 <div className="flex items-center gap-6">
-                                    <div className="flex h-20 w-20 items-center justify-center rounded-[2rem] bg-zinc-50 text-zinc-900 shadow-inner group-hover:bg-zinc-900 group-hover:text-white transition-all duration-500">
-                                        <Layout className="size-8" />
+                                    <div className={`size-16 rounded-[1.25rem] flex items-center justify-center transition-all duration-500 ${expandedCat === cat.id ? 'bg-orange-500 text-white rotate-6 scale-110 shadow-lg shadow-orange-500/20' : 'bg-orange-50 text-orange-500 group-hover/card:scale-110'}`}>
+                                        {expandedCat === cat.id ? <FolderOpen className="size-8" /> : <Folder className="size-8" />}
                                     </div>
                                     <div className="space-y-1">
-                                        <h2 className="text-3xl font-black tracking-tight">{cat.name}</h2>
-                                        <div className="flex items-center gap-3">
-                                            <p className="text-xs font-bold uppercase tracking-widest text-zinc-400">
-                                                {cat.modules.length} Modules Available
-                                            </p>
-                                            {isAdmin && (
-                                                <div className="flex items-center gap-1">
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setEditingId(cat.id);
-                                                            setCatName(cat.name);
-                                                            setIsCatModalOpen(true);
-                                                        }}
-                                                        className="p-1.5 text-zinc-400 hover:text-zinc-900 transition-colors"
-                                                    >
-                                                        <Pencil className="size-3.5" />
-                                                    </button>
-                                                    {cat.modules.length === 0 && (
-                                                        <button
-                                                            onClick={(e) => { e.stopPropagation(); handleDeleteCategory(cat.id, cat.name); }}
-                                                            className="p-1.5 text-zinc-400 hover:text-red-500 transition-colors"
-                                                            title="Delete empty category"
-                                                        >
-                                                            <Trash2 className="size-3.5" />
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            )}
+                                        <h2 className={`text-2xl font-black tracking-tight transition-colors ${expandedCat === cat.id ? 'text-zinc-900' : 'text-zinc-700 group-hover/card:text-zinc-900'}`}>{cat.name}</h2>
+                                        <div className="flex items-center gap-4 text-xs font-bold text-zinc-400">
+                                            <span className="flex items-center gap-1.5"><LayoutGrid className="size-3.5" />{cat.modules.length} modules</span>
+                                            <span className="flex items-center gap-1.5"><BookOpenCheck className="size-3.5" />{cat.modules.reduce((acc, m) => acc + m.items.length, 0)} lessons</span>
                                         </div>
                                     </div>
                                 </div>
+                                
                                 <div className="flex items-center gap-4">
                                     {isAdmin && (
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setSelectedCatId(cat.id);
-                                                    setEditingId(null);
-                                                    setModuleTitle("");
-                                                    setModuleDesc("");
-                                                    setIsModuleModalOpen(true);
-                                                }}
-                                                className="hidden sm:flex h-10 items-center gap-2 rounded-xl bg-orange-50 px-4 text-[10px] font-black uppercase tracking-widest text-orange-600 transition-all hover:bg-orange-100"
+                                        <div className="hidden sm:flex items-center gap-2 pr-4 border-r border-zinc-200" onClick={e => e.stopPropagation()}>
+                                            <button 
+                                                onClick={() => { setEditingId(cat.id); setCatName(cat.name); setIsCatModalOpen(true); }}
+                                                className="p-2.5 rounded-xl hover:bg-white hover:shadow-sm text-zinc-400 hover:text-zinc-900 transition-all"
                                             >
-                                                <Plus className="size-3.5" />
-                                                Add Book
+                                                <Pencil className="size-4.5" />
                                             </button>
+                                            {cat.modules.length === 0 && (
+                                                <button 
+                                                    onClick={() => handleDeleteCategory(cat.id, cat.name)}
+                                                    className="p-2.5 rounded-xl hover:bg-white hover:shadow-sm text-zinc-400 hover:text-red-500 transition-all"
+                                                >
+                                                    <Trash2 className="size-4.5" />
+                                                </button>
+                                            )}
                                         </div>
                                     )}
-                                    {expandedCat === cat.id ? <ChevronUp className="size-6 text-zinc-300" /> : <ChevronDown className="size-6 text-zinc-300" />}
+                                    <div className={`size-10 rounded-full flex items-center justify-center transition-all duration-300 ${expandedCat === cat.id ? 'bg-zinc-950 text-white rotate-180' : 'bg-zinc-100 text-zinc-400 group-hover/card:bg-zinc-200'}`}>
+                                        <ChevronDown className="size-5" />
+                                    </div>
                                 </div>
                             </div>
 
@@ -430,83 +413,98 @@ export default function KnowledgeBase() {
                                         initial={{ height: 0, opacity: 0 }}
                                         animate={{ height: "auto", opacity: 1 }}
                                         exit={{ height: 0, opacity: 0 }}
-                                        className="border-t border-zinc-50 bg-zinc-50/20"
+                                        className="overflow-hidden"
                                     >
-                                        <div className="grid grid-cols-1 md:grid-cols-2 p-8 gap-6 sm:p-10">
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-4 px-2">
                                             {cat.modules.length === 0 ? (
-                                                <div className="col-span-2 py-10 text-center opacity-30 italic font-medium">No books in this category yet.</div>
+                                                <div className="col-span-2 py-16 text-center">
+                                                    <div className="inline-flex size-20 rounded-full bg-zinc-50 items-center justify-center text-zinc-200 mb-4 border border-dashed border-zinc-200">
+                                                        <BookOpen className="size-10" />
+                                                    </div>
+                                                    <p className="text-zinc-400 font-bold italic tracking-tight">No learning modules yet...</p>
+                                                </div>
                                             ) : (
                                                 cat.modules.map((mod) => (
-                                                    <div key={mod.id} className="relative overflow-hidden rounded-[2rem] border border-zinc-100 bg-white p-8 shadow-md group/mod hover:border-orange-200 transition-all">
-                                                        <div className="flex flex-col h-full justify-between">
-                                                            <div className="space-y-4">
-                                                                <div className="flex items-start justify-between">
-                                                                    <div className="h-12 w-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
-                                                                        <BookOpen className="size-6" />
-                                                                    </div>
-                                                                    <div className="flex items-center gap-2">
-                                                                        {isAdmin && (
-                                                                            <div className="flex items-center gap-1 opacity-0 group-hover/mod:opacity-100 transition-all">
-                                                                                <button
-                                                                                    onClick={(e) => {
-                                                                                        e.stopPropagation();
-                                                                                        setEditingId(mod.id);
-                                                                                        setModuleTitle(mod.title);
-                                                                                        setModuleDesc(mod.description || "");
-                                                                                        setSelectedCatId(cat.id);
-                                                                                        setIsModuleModalOpen(true);
-                                                                                    }}
-                                                                                    className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 hover:text-zinc-900 transition-all hover:bg-zinc-100"
-                                                                                >
-                                                                                    <Pencil className="size-4" />
-                                                                                </button>
-                                                                                {mod.items.length === 0 && (
-                                                                                    <button
-                                                                                        onClick={(e) => { e.stopPropagation(); handleDeleteModule(mod.id, mod.title); }}
-                                                                                        className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 hover:text-red-500 transition-all hover:bg-red-50"
-                                                                                        title="Delete empty book"
-                                                                                    >
-                                                                                        <Trash2 className="size-4" />
-                                                                                    </button>
-                                                                                )}
-                                                                            </div>
-                                                                        )}
-                                                                        {isAdmin && (
+                                                    <div key={mod.id} className="group/mod relative bg-zinc-50/50 rounded-[2rem] border border-zinc-100 p-8 transition-all hover:bg-white hover:shadow-2xl hover:border-orange-100/50 overflow-hidden flex flex-col h-full">
+                                                        {/* Module Decoration */}
+                                                        <div className="absolute -right-4 -top-4 size-32 bg-orange-500/5 rounded-full blur-3xl group-hover/mod:bg-orange-500/10 transition-all" />
+                                                        
+                                                        <div className="relative flex flex-col h-full space-y-6">
+                                                            <div className="flex items-start justify-between">
+                                                                <div className="size-14 rounded-2xl bg-white shadow-sm border border-zinc-100 flex items-center justify-center text-orange-500 group-hover/mod:scale-110 group-hover/mod:rotate-3 transition-transform">
+                                                                    <BookOpen className="size-7" />
+                                                                </div>
+                                                                
+                                                                {isAdmin && (
+                                                                    <div className="flex items-center gap-1.5 opacity-0 group-hover/mod:opacity-100 transition-all translate-x-2 group-hover/mod:translate-x-0">
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                setEditingId(mod.id);
+                                                                                setModuleTitle(mod.title);
+                                                                                setModuleDesc(mod.description || "");
+                                                                                setSelectedCatId(cat.id);
+                                                                                setIsModuleModalOpen(true);
+                                                                            }}
+                                                                            className="p-2.5 rounded-xl hover:bg-white text-zinc-400 hover:text-zinc-900 shadow-sm transition-all border border-transparent hover:border-zinc-100"
+                                                                        >
+                                                                            <Pencil className="size-4" />
+                                                                        </button>
+                                                                        {mod.items.length === 0 && (
                                                                             <button
-                                                                                onClick={() => {
-                                                                                    setSelectedModuleId(mod.id);
-                                                                                    setEditingId(null);
-                                                                                    setItemName("");
-                                                                                    setItemContent("");
-                                                                                    setIsItemModalOpen(true);
-                                                                                }}
-                                                                                className="opacity-0 group-hover/mod:opacity-100 flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-950 text-white transition-all hover:scale-110"
+                                                                                onClick={() => handleDeleteModule(mod.id, mod.title)}
+                                                                                className="p-2.5 rounded-xl hover:bg-white text-zinc-400 hover:text-red-500 shadow-sm transition-all border border-transparent hover:border-zinc-100"
                                                                             >
-                                                                                <Plus className="size-4" />
+                                                                                <Trash2 className="size-4" />
                                                                             </button>
                                                                         )}
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                setSelectedModuleId(mod.id);
+                                                                                setEditingId(null);
+                                                                                setItemName("");
+                                                                                setItemContent("");
+                                                                                setIsItemModalOpen(true);
+                                                                            }}
+                                                                            className="size-10 rounded-xl bg-zinc-950 text-white flex items-center justify-center shadow-lg hover:bg-orange-600 transition-all ml-1"
+                                                                        >
+                                                                            <Plus className="size-6" />
+                                                                        </button>
                                                                     </div>
-                                                                </div>
-                                                                <h3 className="text-xl font-black">{mod.title}</h3>
-                                                                <p className="text-sm text-zinc-500 font-medium line-clamp-2">
-                                                                    {mod.description || "No description provided."}
+                                                                )}
+                                                            </div>
+
+                                                            <div className="space-y-2">
+                                                                <h3 className="text-2xl font-black text-zinc-900 leading-tight group-hover/mod:text-orange-950 transition-colors">{mod.title}</h3>
+                                                                <p className="text-sm text-zinc-500 font-medium line-clamp-2 leading-relaxed h-10">
+                                                                    {mod.description || "Learn the ins and outs of this section."}
                                                                 </p>
                                                             </div>
 
-                                                            <div className="mt-8 flex flex-col gap-3">
-                                                                {mod.items.map(item => (
-                                                                    <div key={item.id} className="group/item flex items-center justify-between gap-3 bg-zinc-50/50 p-2.5 rounded-xl border border-transparent hover:border-zinc-200 transition-all">
+                                                            <div className="space-y-2.5 mt-auto pt-4 border-t border-zinc-200/50">
+                                                                {mod.items.map((item, idx) => (
+                                                                    <div key={item.id} className="group/item flex items-center gap-4 p-2 rounded-2xl hover:bg-zinc-50 border border-transparent hover:border-zinc-100 transition-all relative">
                                                                         <button
                                                                             onClick={() => setSelectedItem(item)}
-                                                                            className="flex items-center gap-3 text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors flex-1 text-left w-full"
+                                                                            className="flex-1 flex items-center gap-4 text-left"
                                                                         >
-                                                                            <FileText className="size-3.5 opacity-50 shrink-0" />
-                                                                            <span className="flex-1 truncate">{item.title}</span>
-                                                                            <span className="flex items-center gap-1 text-[9px] font-black opacity-40 shrink-0">
-                                                                                <Clock className="size-2.5" />
-                                                                                {calculateReadingTime(item.content)} MIN
-                                                                            </span>
+                                                                            <div className="relative z-10 size-11 rounded-xl bg-white border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover/item:text-orange-500 group-hover/item:border-orange-200 group-hover/item:shadow-sm transition-all">
+                                                                                <FileText className="size-5" />
+                                                                                <div className="absolute -bottom-1 -right-1 size-5 bg-zinc-100 rounded-lg flex items-center justify-center text-[9px] font-black text-zinc-500 border-2 border-white group-hover/item:bg-orange-500 group-hover/item:text-white transition-all">
+                                                                                    {idx + 1}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className="flex-1 min-w-0">
+                                                                                <p className="text-[11px] font-black text-zinc-400 truncate group-hover/item:text-zinc-900 transition-colors uppercase tracking-tight">{item.title}</p>
+                                                                                <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-300">
+                                                                                    <Clock className="size-3" />
+                                                                                    <span>{calculateReadingTime(item.content)} MIN READ</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className="opacity-0 group-hover/item:opacity-100 transition-all -translate-x-2 group-hover/item:translate-x-0 pr-1">
+                                                                                <MoveRight className="size-4 text-orange-500" />
+                                                                            </div>
                                                                         </button>
+                                                                        
                                                                         {isAdmin && (
                                                                             <div className="flex items-center gap-1 opacity-0 group-hover/item:opacity-100 transition-all">
                                                                                 <button
@@ -518,22 +516,25 @@ export default function KnowledgeBase() {
                                                                                         setSelectedModuleId(mod.id);
                                                                                         setIsItemModalOpen(true);
                                                                                     }}
-                                                                                    className="p-1 text-zinc-400 hover:text-zinc-900 transition-all"
+                                                                                    className="p-2 text-zinc-300 hover:text-zinc-600 transition-all hover:bg-white rounded-lg shadow-sm"
                                                                                 >
-                                                                                    <Pencil className="size-3" />
+                                                                                    <Pencil className="size-3.5" />
                                                                                 </button>
                                                                                 <button
                                                                                     onClick={(e) => { e.stopPropagation(); handleDeleteItem(item.id, item.title); }}
-                                                                                    className="p-1 text-zinc-400 hover:text-red-500 transition-all"
+                                                                                    className="p-2 text-zinc-300 hover:text-red-500 transition-all hover:bg-white rounded-lg shadow-sm"
                                                                                 >
-                                                                                    <Trash2 className="size-3" />
+                                                                                    <Trash2 className="size-3.5" />
                                                                                 </button>
                                                                             </div>
                                                                         )}
                                                                     </div>
                                                                 ))}
                                                                 {mod.items.length === 0 && (
-                                                                    <span className="text-[10px] uppercase font-black tracking-widest text-zinc-300">No content yet</span>
+                                                                    <div className="flex items-center gap-3 py-6 px-4 bg-white/40 rounded-[1.5rem] border border-dashed border-zinc-200">
+                                                                        <div className="size-2 rounded-full bg-zinc-300 animate-pulse" />
+                                                                        <span className="text-xs font-bold text-zinc-300 tracking-tight italic">Waiting for lessons...</span>
+                                                                    </div>
                                                                 )}
                                                             </div>
                                                         </div>
@@ -541,6 +542,26 @@ export default function KnowledgeBase() {
                                                 ))
                                             )}
                                         </div>
+                                        
+                                        {isAdmin && (
+                                            <div className="flex justify-center pb-8 pt-6">
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedCatId(cat.id);
+                                                        setEditingId(null);
+                                                        setModuleTitle("");
+                                                        setModuleDesc("");
+                                                        setIsModuleModalOpen(true);
+                                                    }}
+                                                    className="group flex items-center gap-4 px-10 py-5 rounded-[2rem] bg-white border-2 border-dashed border-zinc-200 text-zinc-400 font-bold hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50/50 transition-all duration-300"
+                                                >
+                                                    <div className="size-8 rounded-full bg-zinc-50 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-all">
+                                                        <Plus className="size-5" />
+                                                    </div>
+                                                    <span className="uppercase text-[11px] tracking-[0.2em] font-black">Add New Learning Book</span>
+                                                </button>
+                                            </div>
+                                        )}
                                     </motion.div>
                                 )}
                             </AnimatePresence>
