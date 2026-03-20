@@ -1,23 +1,22 @@
 "use client";
 
-import { 
-    Check, 
-    KeyRound, 
-    Loader2, 
-    Mail, 
-    Save, 
-    ShieldCheck, 
-    User, 
-    UserCircle,
-    Palette,
+import {
     ArrowLeft,
+    Check,
     ChevronRight,
-    History,
-    Monitor,
     Globe,
+    History,
+    KeyRound,
+    Loader2,
+    Mail,
+    Monitor,
+    Palette,
+    Save,
+    Settings,
+    ShieldCheck,
     Smartphone,
     Tablet,
-    Settings
+    User
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -106,7 +105,7 @@ export default function SettingsPage() {
 
             setMessage({ type: "success", text: "Settings updated successfully!" });
             setFormData(prev => ({ ...prev, password: "" }));
-            
+
             await update({
                 ...session,
                 user: {
@@ -163,8 +162,8 @@ export default function SettingsPage() {
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div className="space-y-1">
                     <div className="flex items-center gap-2 mb-2">
-                         {activeSection !== "overview" && (
-                            <button 
+                        {activeSection !== "overview" && (
+                            <button
                                 onClick={() => setActiveSection("overview")}
                                 className="flex h-8 w-8 items-center justify-center rounded-xl bg-zinc-100 border border-zinc-200 transition-transform active:scale-90"
                             >
@@ -189,7 +188,7 @@ export default function SettingsPage() {
 
                 {activeSection !== "overview" && (
                     <div className="flex gap-3">
-                         <button
+                        <button
                             onClick={() => setActiveSection("overview")}
                             className="h-11 px-6 rounded-2xl bg-zinc-100 text-zinc-600 font-bold text-xs uppercase tracking-widest hover:bg-zinc-200 transition-all"
                         >
@@ -208,11 +207,10 @@ export default function SettingsPage() {
             </div>
 
             {message.text && (
-                <div className={`p-4 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center gap-3 animate-in fade-in zoom-in-95 duration-300 ${
-                    message.type === 'success' 
-                    ? 'bg-green-50 text-green-600' 
+                <div className={`p-4 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center gap-3 animate-in fade-in zoom-in-95 duration-300 ${message.type === 'success'
+                    ? 'bg-green-50 text-green-600'
                     : 'bg-red-50 text-red-600'
-                }`}>
+                    }`}>
                     {message.type === 'success' ? <Check className="size-4" /> : <ShieldCheck className="size-4" />}
                     {message.text}
                 </div>
@@ -238,7 +236,7 @@ export default function SettingsPage() {
                                 <p className="mt-2 text-sm text-zinc-500 group-hover:text-zinc-600 transition-colors">
                                     {section.desc}
                                 </p>
-                                
+
                                 <div className="mt-8 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-brand opacity-0 translate-x-4 transition-all group-hover:opacity-100 group-hover:translate-x-0">
                                     Configure
                                     <ChevronRight className="size-3" />
@@ -249,45 +247,6 @@ export default function SettingsPage() {
                             </button>
                         );
                     })}
-
-                    <div className="md:col-span-3 mt-4 rounded-[2.5rem] bg-zinc-50 p-8 border border-border flex flex-col md:flex-row items-center gap-6">
-                        <div className="h-20 w-20 rounded-full bg-linear-to-br from-brand to-brand/60 p-1">
-                            <div className="h-full w-full rounded-full bg-white flex items-center justify-center">
-                                <UserCircle className="size-12 text-zinc-200" />
-                            </div>
-                        </div>
-                        <div className="text-center md:text-left">
-                            <h2 className="text-2xl font-black">{session?.user?.name}</h2>
-                            <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-1">
-                                {session?.user?.role?.replace('_', ' ')} • Active Session
-                            </p>
-                        </div>
-                        <div className="ms-auto flex items-center gap-4">
-                            <div className="text-right hidden sm:block">
-                                <div className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Security Score</div>
-                                <div className="text-sm font-bold text-green-500">Strong</div>
-                            </div>
-                            <div className="h-10 w-[2px] bg-zinc-200 hidden sm:block" />
-                            <div className="text-right hidden lg:block min-w-32">
-                                <div className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Last Login</div>
-                                <div className="text-sm font-bold text-zinc-900">
-                                    {loginHistory[0] ? new Date(loginHistory[0].createdAt).toLocaleString([], {
-                                        day: '2-digit',
-                                        month: '2-digit',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                    }) : 'N/A'}
-                                </div>
-                            </div>
-                            <div className="h-10 w-[2px] bg-zinc-200 hidden lg:block" />
-                            <button 
-                                onClick={() => setActiveSection("profile")}
-                                className="px-6 h-12 rounded-2xl bg-zinc-900 text-white font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
-                            >
-                                Quick Edit
-                            </button>
-                        </div>
-                    </div>
                 </div>
             ) : (
                 /* Individual Section Views */
@@ -349,9 +308,8 @@ export default function SettingsPage() {
                                         key={color.value}
                                         type="button"
                                         onClick={() => changeBrandColor(color.value)}
-                                        className={`group relative h-16 w-16 rounded-3xl transition-all duration-300 ${
-                                            formData.brandColor === color.value ? 'scale-110 shadow-2xl ring-4 ring-white' : 'hover:scale-105 opacity-60 hover:opacity-100 shadow-lg'
-                                        }`}
+                                        className={`group relative h-16 w-16 rounded-3xl transition-all duration-300 ${formData.brandColor === color.value ? 'scale-110 shadow-2xl ring-4 ring-white' : 'hover:scale-105 opacity-60 hover:opacity-100 shadow-lg'
+                                            }`}
                                         style={{ backgroundColor: `rgb(${color.value})` }}
                                     >
                                         {formData.brandColor === color.value && (
@@ -395,20 +353,20 @@ export default function SettingsPage() {
                     )}
                     {activeSection === "history" && (
                         <div className="rounded-[2.5rem] border border-border bg-white p-10 shadow-sm animate-in fade-in slide-in-from-right-4 duration-500">
-                             <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center justify-between mb-8">
                                 <h3 className="text-2xl font-black flex items-center gap-4 text-zinc-950">
-                                     <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-zinc-900 text-white">
-                                         <History className="size-5" />
-                                     </div>
-                                     Sign-in History
-                                 </h3>
-                                 <button 
-                                     onClick={fetchLoginHistory}
-                                     disabled={fetchingHistory}
-                                     className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-brand transition-colors disabled:opacity-50"
-                                 >
-                                     {fetchingHistory ? "Refreshing..." : "Refresh List"}
-                                 </button>
+                                    <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-zinc-900 text-white">
+                                        <History className="size-5" />
+                                    </div>
+                                    Sign-in History
+                                </h3>
+                                <button
+                                    onClick={fetchLoginHistory}
+                                    disabled={fetchingHistory}
+                                    className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-brand transition-colors disabled:opacity-50"
+                                >
+                                    {fetchingHistory ? "Refreshing..." : "Refresh List"}
+                                </button>
                             </div>
 
                             <div className="space-y-4">
@@ -424,21 +382,21 @@ export default function SettingsPage() {
                                 {loginHistory.map((item, idx) => {
                                     const date = new Date(item.createdAt);
                                     const timeStr = date.toLocaleString();
-                                    
+
                                     // Icon logic
                                     let DeviceIcon = Monitor;
                                     if (item.device?.toLowerCase().includes('mobile')) DeviceIcon = Smartphone;
                                     if (item.device?.toLowerCase().includes('tablet')) DeviceIcon = Tablet;
 
                                     return (
-                                        <div 
-                                            key={item.id} 
+                                        <div
+                                            key={item.id}
                                             className="group flex items-center gap-6 p-6 rounded-3xl border border-border hover:border-brand/20 hover:bg-zinc-50/50 transition-all"
                                         >
                                             <div className="h-14 w-14 flex items-center justify-center rounded-2xl bg-zinc-100 group-hover:bg-brand/10 group-hover:text-brand transition-colors">
                                                 <DeviceIcon className="size-6" />
                                             </div>
-                                            
+
                                             <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
                                                 <div>
                                                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">Device & Browser</p>
@@ -466,7 +424,7 @@ export default function SettingsPage() {
                                     );
                                 })}
                             </div>
-                            
+
                             <p className="mt-8 text-[10px] font-bold text-zinc-400 uppercase tracking-widest text-center">
                                 Showing last 20 login attempts. If you see unrecognized activity, change your password immediately.
                             </p>

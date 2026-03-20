@@ -77,3 +77,31 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model KnowledgeCategory {
+  id        String            @id @default(cuid())
+  name      String            @unique
+  icon      String            @default("BookOpen")
+  modules   KnowledgeModule[]
+  createdAt DateTime          @default(now())
+}
+
+model KnowledgeModule {
+  id          String            @id @default(cuid())
+  categoryId  String
+  category    KnowledgeCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  title       String
+  description String?           @db.Text
+  items       KnowledgeItem[]
+  createdAt   DateTime          @default(now())
+}
+
+model KnowledgeItem {
+  id        String          @id @default(cuid())
+  moduleId  String
+  module    KnowledgeModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  title     String
+  content   String          @db.Text
+  order     Int             @default(0)
+  createdAt DateTime        @default(now())
+}
