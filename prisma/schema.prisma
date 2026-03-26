@@ -55,7 +55,6 @@ model User {
   accessExpiresAt DateTime? // Timed access
 }
 
-
 model LoginHistory {
   id        String   @id @default(cuid())
   userId    String
